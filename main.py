@@ -1,78 +1,43 @@
-import pandas as pd
-import plotly.graph_objects as go
+import os
+import urllib
+
+from configs import configure_manager
+from constants import AVL_INPUT_ADAPTERS
+from entities import CandlestickPlot
+from exceptions import InputStringException
+from indicators import Ema
 
 
-def get_trades_data(file_path):
-    df = pd.read_csv(file_path)
-    df['TS'] = pd.to_datetime(df['TS'])
-    df['Open'] = df['PRICE']
-    df['High'] = df['PRICE']
-    df['Low'] = df['PRICE']
-    df['Close'] = df['PRICE']
+def input_string_match(input_string):
+    if urllib.parse.urlparse(input_string).scheme:
+        raise InputStringException('Data download links are not supported yet')
 
-    return df
+    if not os.path.isfile(input_string):
+        raise InputStringException('The file was not found at the specified path')
 
-
-def create_candlesticks(trades, interval_minutes):
-    ohlc_dict = {
-        'TS': 'first',
-        'Open': 'first',
-        'High': 'max',
-        'Low': 'min',
-        'Close': 'last',
-    }
-
-    candlesticks = trades.resample(f'{interval_minutes}T', on='TS').apply(ohlc_dict).dropna()
-
-    return candlesticks
-
-
-def plot_candlestick(data):
-
-    fig = go.Figure(
-        data=[
-            go.Candlestick(
-                x=data['TS'],
-                open=data['Open'],
-                high=data['High'],
-                low=data['Low'],
-                close=data['Close'],
-                name='Candlestick'
-            )
-        ]
+    file_extension = os.path.splitext(input_string)[-1]
+    for input_adapter in AVL_INPUT_ADAPTERS:
+        if file_extension == input_adapter.FILE_EXTENSION:
+            return input_adapter(file_path=input_string)
+    raise InputStringException(
+        f'{input_string} is not supported, specify'
+        f' a file with a valid extension '
+        f'{[adapter.FILE_EXTENSION for adapter in AVL_INPUT_ADAPTERS]}'
+        f' or a link to download the data.'
     )
 
-    if ema_data is not None:
-        fig.add_trace(go.Scatter(
-            x=data['TS'],
-            y=ema_data,
-            mode='lines',
-            name='EMA'
-        ))
 
-    fig.update_layout(
-        title='Candlestick Chart',
-        xaxis_title='Date',
-        yaxis_title='Price',
-        xaxis_rangeslider_visible=True
-    )
+def main():
+    plot_manager = configure_manager()
+    args = plot_manager.parse_args()
 
-    fig.show()
-
-
-def calculate_ema(data, length):
-    ema = data['Close'].ewm(span=length, adjust=False).mean()
-    return ema
+    input_adapter = input_string_match(input_string=args.input_string)
+    plot_data = input_adapter.run(interval_minutes=args.interval_minutes)
+    indicators = []
+    if args.ema:
+        indicators.append(Ema(period=args.ema, plot_data=plot_data))
+    CandlestickPlot(plot_data=plot_data, indicators=indicators).show()
 
 
 if __name__ == '__main__':
-    csv_file = 'prices.csv'
-    interval_minutes = 60
-    ema_length = 90
-
-    trades_data = get_trades_data(csv_file)
-
-    candlesticks_data = create_candlesticks(trades_data, interval_minutes)
-    ema_data = calculate_ema(data=candlesticks_data, length=ema_length)
-
-    plot_candlestick(candlesticks_data)
+    main()
