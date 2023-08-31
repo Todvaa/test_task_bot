@@ -6,12 +6,14 @@ from plotly.graph_objs import Scatter
 
 
 class AbstractIndicator(ABC):
+    """Abstract class for indicators"""
     @abstractmethod
     def build(self):
         pass
 
 
 class Ema(AbstractIndicator):
+    """Exponential Moving Average indicator"""
     def __init__(self, plot_data: DataFrame, period: int):
         self.plot_data = plot_data
         self.period = period

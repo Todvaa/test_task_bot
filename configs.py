@@ -2,11 +2,13 @@ import argparse
 
 
 def configure_manager():
+    """Console command manager"""
     manager = argparse.ArgumentParser(
         description='Building a price plot'
     )
     manager.add_argument(
-        'input_string',
+        'input',
+        type=str,
         help='Link or file path with an extension',
     )
     manager.add_argument(

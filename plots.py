@@ -18,6 +18,7 @@ class CandlestickPlot:
         self.indicators = indicators
 
     def show(self):
+        """Collects and displays the chart and required indicators"""
         fig = go.Figure(
             data=[
                 go.Candlestick(
@@ -30,9 +31,8 @@ class CandlestickPlot:
                 )
             ]
         )
-        if self.indicators:
-            for indicator in self.indicators:
-                fig.add_trace(indicator.build())
+        for indicator in self.indicators:
+            fig.add_trace(indicator.build())
 
         fig.update_layout(
             title=self.name,
