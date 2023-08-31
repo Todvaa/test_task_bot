@@ -16,7 +16,7 @@ The CsvInputAdapter class casts it to pandas.DataFrame, an OHLC structure. The c
 To process user files, the column structure must be identical to prices.csv, when starting, specify the absolute path to the user file.
 See Examples of using.
 #### Arguments
-Mandatory
+Required
 - "input" (String. Link or path to a file with extension, the possibility of adding a link to data in the future is taken into account)
 - "interval_minutes" (Integer. Time interval for chart element)
 
