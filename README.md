@@ -1,4 +1,46 @@
 # test_task_bot
+## Description
+Test task, building a price chart with indicators according to the specified parameters.
+The code is structured, has an extensible architecture. It is possible to add any indicators,
+multiple indicators per chart. Added tests
+## Installation
+1. Download the project from this repository
+2. Install dependencies
+<br><pre>pip install -r requirements.txt</pre><br>
+## Run tests
+1. Run the following command from the project directory
+<br><pre>python -m unittest</pre><br>
+## Data
+The repository contains a test file prices.csv. The file contains two columns TS and PRICE.
+The CsvInputAdapter class casts it to pandas.DataFrame, an OHLC structure. The code implements the ability to add other adapters.
+To process user files, the column structure must be identical to prices.csv, when starting, specify the absolute path to the user file.
+See usage examples.
+#### Arguments
+Mandatory
+- "input" (String. Link or path to a file with extension, the possibility of adding a link to data in the future is taken into account)
+- "interval_minutes" (Integer. Time interval for chart element)
+
+Optional
+- "(-e | --ema) + int" (Adds the EMA indicator to the chart with the specified period)
+## Examples of using
+This command builds an hourly candlestick chart with the EMA(14) indicator
+<br><pre>python main.py prices.csv 60 -e 14</pre><br>
+Result:
+![image](https://github.com/Todvaa/test_task_bot/assets/109280151/0205609a-390a-476d-9a66-cccc0a799844)
+
+This chart plots a two-hour candlestick chart with the EMA(100) indicator
+<br><pre>python main.py prices.csv 120 -e 100</pre><br>
+Result:
+![image](https://github.com/Todvaa/test_task_bot/assets/109280151/bd867ef0-9b22-4ac4-95d4-1d9077955b89)
+
+This chart builds a fifteen-minute chart without an indicator.
+<br><pre>python main.py prices.csv 15</pre><br>
+Result:
+![image](https://github.com/Todvaa/test_task_bot/assets/109280151/61972126-ecb3-4dde-aaa6-de71a9668beb)
+
+*** To get acquainted with the available functionality, run the following command from the project directory
+<br><pre>python main.py -h</pre><br>
+
 ## Описание
 Тестовое задание, построение графка цены с индикаторами по заданным параметрам. 
 Код структурирован, имеет расширяемую архитектуру. Предусмотрена возможность добавления любых индикаторов,
@@ -21,7 +63,7 @@
 - "interval_minutes" (Целое число. Временной интервал для элемента графика)
 
 Необязательные
-- "-e | --ema + int" (Добавляет индикатор EMA на график с указанным периодом)
+- "(-e | --ema) + int" (Добавляет индикатор EMA на график с указанным периодом)
 
 ## Примеры использования
 Данная команда построит часовой свечной график с индикатором EMA(14)
