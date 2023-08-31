@@ -14,7 +14,7 @@ multiple indicators per chart. Added tests
 The repository contains a test file prices.csv. The file contains two columns TS and PRICE.
 The CsvInputAdapter class casts it to pandas.DataFrame, an OHLC structure. The code implements the ability to add other adapters.
 To process user files, the column structure must be identical to prices.csv, when starting, specify the absolute path to the user file.
-See usage examples.
+See Examples of using.
 #### Arguments
 Mandatory
 - "input" (String. Link or path to a file with extension, the possibility of adding a link to data in the future is taken into account)
